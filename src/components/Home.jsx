@@ -2,7 +2,7 @@
 import '/src/Styles/Home.css'; 
 import logo from '../assets/logo.png';
 
-export const Home = () => {
+const Home = () => {
   return (
     <div className="home-container">
       <div className="welcome-box">
@@ -19,3 +19,5 @@ export const Home = () => {
     </div>
   );
 };
+
+export default Home;
