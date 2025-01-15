@@ -1,0 +1,40 @@
+/* Home.css */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #e9ffe9;
+  }
+  
+  .home-container {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-color: #e9ffe9;
+  }
+  
+  .welcome-box {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 500px;
+  }
+  
+  .welcome-logo {
+    width: 100px;
+    margin-bottom: 20px;
+  }
+  
+  h1 {
+    color: #34a853;
+    font-size: 32px;
+  }
+  
+  p {
+    color: #333;
+    font-size: 18px;
+    line-height: 1.5;
+  }
+  
