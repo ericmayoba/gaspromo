@@ -1,0 +1,23 @@
+table {
+    margin: 20px auto; /* Márgenes de 20px en la parte superior e inferior, auto para centrar */
+    max-width: 100%; /* Máximo ancho del 100% del contenedor */
+    border-collapse: collapse; /* Elimina el espacio entre celdas */
+    width: auto; /* Permite que la tabla se adapte al contenido */
+}
+
+.container {
+    margin-top: 15px;
+
+}
+
+table body {
+    margin: 20px;
+
+}
+
+
+table th, table td {
+    padding: 10px; /* Espaciado interno de las celdas */
+    text-align: left; /* Alineación de texto a la izquierda */
+    border: 1px solid #ddd; /* Borde suave en las celdas */
+}
