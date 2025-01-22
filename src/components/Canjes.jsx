@@ -1,12 +1,16 @@
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import "../Styles/Canjes.css"
 
 export const Canjes = () => {
+  
+  const [codigo, setCodigo] = useState('');
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm();
 
@@ -14,28 +18,62 @@ export const Canjes = () => {
     console.log(data);
   };
 
+  const handleCodigoBlur = async (event) => {
+    const inputCodigo = event.target.value;
+    setCodigo(inputCodigo);
+
+    if (inputCodigo) {
+      try {
+        const response = await fetch(`http://localhost:5244/api/Canjes/GetDataCanje?codigo=${inputCodigo}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.length > 0) {
+            const canjeData = data[0];
+            setValue('cliente', canjeData.cliente);
+            setValue('visitas', canjeData.visitas);
+            setValue('ganados', canjeData.ganados);
+            setValue('canjeados', canjeData.canjeados);
+            setValue('disponibles', canjeData.disponibles);
+            setValue('fechaUltimoCanje', new Date(canjeData.fecha_Ultimo_Canje).toISOString().slice(0, 16));
+          } else {
+            alert('No se encontraron datos para el código ingresado');
+          }
+        } else {
+          alert('Error al obtener los datos del canje');
+        }
+      } catch (error) {
+        console.error('Error al obtener los datos del canje:', error);
+        alert('Error de red al intentar obtener los datos del canje');
+      }
+    }
+  };
+
   return (
     <>
-    <h1 className="mt-4">Formulario de Canje</h1>
+    
     <Container className='container'>
         
     <div className='content'>
+        <div className='title'>
+            <h1 className="mt-4">Formulario de Canje</h1>
+        </div>
      
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Row className="mb-4">
+      <Row className="mb-4">
           <Col md={4}>
             <Form.Group controlId="codigo">
               <Form.Label>Código</Form.Label>
               <Form.Control
                 type="number"
-                {...register('codigo', { required: 'El código es obligatorio' })}
+                {...register('codigo', { required: 'El código es obligatorio', maxLengthength: { value: 5, message: 'El código de tener 5 digitos numericos.' }, minLength: { value: 5, message: 'El código de tener 5 digitos numericos.' } })}
                 isInvalid={!!errors.codigo}
+                onBlur={handleCodigoBlur}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.codigo?.message}
               </Form.Control.Feedback>
             </Form.Group>
-          </Col>          
+          </Col>
         </Row>
 
         <Row className="mb-3">
@@ -47,6 +85,7 @@ export const Canjes = () => {
                 {...register('cliente')}
                 readOnly
                 defaultValue="Cliente"
+                className="disabled-input"                
               />
             </Form.Group>
           </Col>
@@ -61,6 +100,7 @@ export const Canjes = () => {
                 {...register('visitas')}
                 readOnly
                 defaultValue={0}
+                className="disabled-input"
               />
             </Form.Group>
           </Col>
@@ -73,6 +113,7 @@ export const Canjes = () => {
                 {...register('ganados')}
                 readOnly
                 defaultValue={0}
+                className="disabled-input"
               />
             </Form.Group>
           </Col>
@@ -89,6 +130,7 @@ export const Canjes = () => {
                 {...register('canjeados')}
                 readOnly
                 defaultValue={0}
+                className="disabled-input"
               />
             </Form.Group>
           </Col>
@@ -101,6 +143,7 @@ export const Canjes = () => {
                 {...register('disponibles')}
                 readOnly
                 defaultValue={0}
+                className="disabled-input"
               />
             </Form.Group>
           </Col>
@@ -118,6 +161,7 @@ export const Canjes = () => {
                 {...register('fechaUltimoCanje')}
                 readOnly
                 defaultValue={new Date().toISOString().slice(0, 16)}
+                className="disabled-input"
               />
             </Form.Group>
           </Col>
@@ -153,5 +197,3 @@ export const Canjes = () => {
   );
 };
 
-
-// default Canjes;

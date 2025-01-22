@@ -16,3 +16,15 @@
 .boton {
     text-align:right;
 }
+
+.title {
+    margin-bottom: 4%;
+    text-decoration: underline;
+ 
+}
+
+.disabled-input {
+    background-color: #e9ecef !important; /* Color gris claro */
+    opacity: 1; /* Asegura que el texto sea legible */
+  }
+  
