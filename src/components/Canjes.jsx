@@ -67,9 +67,9 @@ export const Canjes = () => {
   return (
     <>
     
-    <Container className='container'>
+    <Container className='canjes-container'>
         
-    <div className='content'>
+    <div className='canjes-content'>
         <div className='title'>
             <h1 className="mt-4">Formulario de Canje</h1>
         </div>

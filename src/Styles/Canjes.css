@@ -1,9 +1,9 @@
-.container {
+.canjes-container {
     width: 100%;
     padding: 0; 
 }
 
-.content {
+.canjes-content {
     display:block;
     flex-direction:row;
     border: 2px solid #cdd3d7;
