@@ -12,11 +12,26 @@ export const Canjes = () => {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    const { codigo, canjear } = data;
+    try {
+      const response = await fetch(`http://localhost:5244/api/Canjes/PostCanje?codigo=${codigo}&canje=${canjear}`, {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        Swal.fire("Éxito", 'Canje realizado con éxito', "success");
+        reset();
+      } else {
+        Swal.fire("Error", "Error al obtener los datos del canje'.", "error"); 
+      }
+    } catch (error) {
+      Swal.fire("Error", "Error al realizar el canje: ", error); 
+    }
   };
 
   const handleCodigoBlur = async (event) => {
@@ -43,8 +58,7 @@ export const Canjes = () => {
             Swal.fire("Error", "Error al obtener los datos del canje'.", "error"); 
         }
       } catch (error) {
-        console.error('Error al obtener los datos del canje:', error);
-        Swal.fire("Error", "Error de red al intentar obtener los datos del canje'.", "error"); 
+        Swal.fire("Error", "Error de red al intentar obtener los datos del canje'.", error); 
       }
     }
   };
