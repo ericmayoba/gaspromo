@@ -4,6 +4,7 @@ import { BrowserMultiFormatReader } from '@zxing/library';
 import Swal from "sweetalert2";
 import "../Styles/Visitas.css"
 
+
 export const Visitas = () => {
     const videoRef = useRef(null);
     const [barcode, setBarcode] = useState('');

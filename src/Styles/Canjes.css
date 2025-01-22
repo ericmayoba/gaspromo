@@ -1,6 +1,6 @@
 .container {
     width: 100%;
-    padding: 0; /* Eliminar el padding de la contenedor */
+    padding: 0; 
 }
 
 .content {
@@ -24,7 +24,7 @@
 }
 
 .disabled-input {
-    background-color: #e9ecef !important; /* Color gris claro */
-    opacity: 1; /* Asegura que el texto sea legible */
+    background-color: #e9ecef !important; 
+    opacity: 1; 
   }
   

@@ -5,6 +5,7 @@ import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import Swal from "sweetalert2";
 import "../Styles/Canjes.css"
 
+
 export const Canjes = () => {
   
   const [codigo, setCodigo] = useState('');
