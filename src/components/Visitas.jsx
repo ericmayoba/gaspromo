@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { Button, Form } from "react-bootstrap";
 import { BrowserMultiFormatReader } from '@zxing/library';
+import Swal from "sweetalert2";
 import "../Styles/Visitas.css"
 
 export const Visitas = () => {
@@ -68,66 +69,92 @@ export const Visitas = () => {
                 });
             } else {
                 console.error('Error al consultar el endpoint');
-                setData({
-                    codigo: '',
-                    cliente: '',
-                    vehiculo: '',
-                    telefono: '',
-                    visitas: ''
-                });
+                cleanData();
             }
         } catch (error) {
             console.error('Error de red:', error);
-            setData({
-                codigo: '',
-                cliente: '',
-                vehiculo: '',
-                telefono: '',
-                visitas: ''
-            });
+            cleanData();
         }
     };
 
-    const handleGuardarVisita = () => {
-        alert('Visita guardada con éxito.');
+    const handleGuardarVisita = async () => {
+        if (!data.codigo) {
+            Swal.fire("Error", "No se ha capturado ningún código para guardar la visita.", "error");            
+            return;
+        }
+
+        const body = {
+            codigoCliente: data.codigo,
+            fechaVisita: new Date().toISOString(), // Fecha actual en formato ISO
+            estatusVisita: true
+        };
+
+        try {
+            const response = await fetch("http://localhost:5244/api/Visitas", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (response.ok) {
+                Swal.fire("Éxito", "Visita guardada con éxito.", "success");
+                cleanData();
+            } else {
+                console.error("Error al guardar la visita:", response.statusText);
+                Swal.fire("Error", "Ocurrió un error al guardar la visita. Por favor, inténtelo de nuevo.", "error"); 
+            }
+        } catch (error) {
+            Swal.fire("Error", "Error de red al guardar la visita:", error); 
+        }
     };
+
+    const cleanData = () => {
+        setData({
+            codigo: '',
+            cliente: '',
+            vehiculo: '',
+            telefono: '',
+            visitas: ''
+        });
+    }
 
     return (
         <div className="container">
-    <div className="content">
-        {/* Columna izquierda */}
-        <div className="capture-section">
-            <h3>Captura</h3>
-            <video ref={videoRef} className="video" />
-        </div>
+            <div className="content">
+                {/* Columna izquierda */}
+                <div className="capture-section">
+                    <h3>Captura</h3>
+                    <video ref={videoRef} className="video" />
+                </div>
 
-        {/* Línea de separación vertical */}
-        <div className="separator"></div>
+                {/* Línea de separación vertical */}
+                <div className="separator"></div>
 
-        {/* Columna derecha */}
-        <div className="data-section">
-            <h3>Información del Cliente</h3>
-            <div className='form-control'>
-                <label><strong>Código:</strong> {data.codigo}</label>
+                {/* Columna derecha */}
+                <div className="data-section">
+                    <h3>Información del Cliente</h3>
+                    <div className='form-control'>
+                        <label><strong>Código:</strong> {data.codigo}</label>
+                    </div>
+                    <div className='form-control'>
+                        <label><strong>Cliente:</strong> {data.cliente}</label>
+                    </div>
+                    <div className='form-control'>
+                        <label><strong>Vehículo:</strong> {data.vehiculo}</label>
+                    </div>
+                    <div className='form-control'>
+                        <label><strong>Teléfono:</strong> {data.telefono}</label>
+                    </div>
+                    <div className='form-control'>
+                        <label><strong>Visitas:</strong> {data.visitas}</label>
+                    </div>
+                    <div className='boton'> 
+                        <Button onClick={handleGuardarVisita}>Guardar Visita</Button>
+                    </div>
+                </div>
             </div>
-            <div className='form-control'>
-                <label><strong>Cliente:</strong> {data.cliente}</label>
-            </div>
-            <div className='form-control'>
-                <label><strong>Vehículo:</strong> {data.vehiculo}</label>
-            </div>
-            <div className='form-control'>
-                <label><strong>Teléfono:</strong> {data.telefono}</label>
-            </div>
-            <div className='form-control'>
-                <label><strong>Visitas:</strong> {data.visitas}</label>
-            </div>
-            <div className='boton'> 
-            <Button  onClick={handleGuardarVisita}>Guardar Visita</Button>
-            </div>
-            
         </div>
-    </div>
-</div>
     );
 };
