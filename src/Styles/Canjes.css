@@ -1,0 +1,18 @@
+.container {
+    width: 100%;
+    padding: 0; /* Eliminar el padding de la contenedor */
+}
+
+.content {
+    display:block;
+    flex-direction:row;
+    border: 2px solid #cdd3d7;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    height: 100%;
+    
+}
+
+.boton {
+    text-align:right;
+}
