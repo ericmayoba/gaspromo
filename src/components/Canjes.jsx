@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import Swal from "sweetalert2";
 import "../Styles/Canjes.css"
 
 export const Canjes = () => {
@@ -36,14 +37,14 @@ export const Canjes = () => {
             setValue('disponibles', canjeData.disponibles);
             setValue('fechaUltimoCanje', new Date(canjeData.fecha_Ultimo_Canje).toISOString().slice(0, 16));
           } else {
-            alert('No se encontraron datos para el código ingresado');
+            Swal.fire("Error", "No se encontraron datos para el código ingresado.", "error"); 
           }
         } else {
-          alert('Error al obtener los datos del canje');
+            Swal.fire("Error", "Error al obtener los datos del canje'.", "error"); 
         }
       } catch (error) {
         console.error('Error al obtener los datos del canje:', error);
-        alert('Error de red al intentar obtener los datos del canje');
+        Swal.fire("Error", "Error de red al intentar obtener los datos del canje'.", "error"); 
       }
     }
   };
