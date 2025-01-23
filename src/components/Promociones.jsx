@@ -5,8 +5,11 @@ import "../Styles/Promociones.css";
 
 export const Promociones = () => {
   const [promociones, setPromociones] = useState([]); // Estado para guardar las promociones
+  const [sucursales, setSucursales] = useState([]); // Estado para guardar las sucursales
   const [showModal, setShowModal] = useState(false); // Estado para controlar el modal
-  const [newPromocion, setNewPromocion] = useState({
+  const [isEditMode, setIsEditMode] = useState(false); // Estado para diferenciar entre crear y editar
+  const [editPromocionId, setEditPromocionId] = useState(null); // ID de la promoción a editar
+  const [formPromocion, setFormPromocion] = useState({
     descripcion: "",
     valorPuntos: "",
     minimoParaCanje: "",
@@ -33,23 +36,57 @@ export const Promociones = () => {
     }
   };
 
+  // Función para obtener las sucursales del endpoint
+  const fetchSucursales = async () => {
+    try {
+      const response = await fetch('http://localhost:5244/Sucursales?PageNumber=1&PageSize=10');
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      const data = await response.json();
+      setSucursales(data.registros); // Guardar los registros de sucursales
+    } catch (error) {
+      console.error('Error al obtener las sucursales:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudieron cargar las sucursales. Intenta nuevamente más tarde.',
+      });
+    }
+  };
+
+  // Función para obtener el nombre de la sucursal por su ID
+  const getSucursalNombre = (idSucursal) => {
+    const sucursal = sucursales.find((s) => s.id === idSucursal);
+    return sucursal ? sucursal.nombre : "Desconocido";
+  };
+
+  // Cargar las promociones y sucursales al cargar el componente
+  useEffect(() => {
+    fetchPromociones();
+    fetchSucursales();
+  }, []);
+
   // Función para manejar el cambio de los inputs en el formulario
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewPromocion({ ...newPromocion, [name]: value });
+    setFormPromocion({ ...formPromocion, [name]: value });
   };
 
-  // Función para enviar los datos al endpoint
+  // Función para guardar o editar una promoción
   const handleSavePromocion = async () => {
     try {
-        console.info(newPromocion)
-      const response = await fetch('http://localhost:5244/api/Promociones', {
-        method: 'POST',
+      const method = isEditMode ? 'PUT' : 'POST';
+      const url = isEditMode
+        ? `http://localhost:5244/api/Promociones/${editPromocionId}`
+        : 'http://localhost:5244/api/Promociones';
+
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newPromocion),
-        
+        body: JSON.stringify(formPromocion),
       });
 
       if (!response.ok) {
@@ -59,17 +96,20 @@ export const Promociones = () => {
       Swal.fire({
         icon: 'success',
         title: 'Éxito',
-        text: 'La promoción se creó correctamente.',
+        text: isEditMode
+          ? 'La promoción se actualizó correctamente.'
+          : 'La promoción se creó correctamente.',
       });
 
       setShowModal(false); // Cerrar el modal
-      setNewPromocion({
+      setFormPromocion({
         descripcion: "",
         valorPuntos: "",
         minimoParaCanje: "",
         idSucursal: "",
-        estatus: "",
+        estatus: true,
       }); // Limpiar el formulario
+      setIsEditMode(false);
       fetchPromociones(); // Recargar las promociones
     } catch (error) {
       console.error('Error al guardar la promoción:', error);
@@ -81,16 +121,68 @@ export const Promociones = () => {
     }
   };
 
-  // Cargar las promociones al cargar el componente
-  useEffect(() => {
-    fetchPromociones();
-  }, []);
+  // Función para mostrar el modal en modo edición
+  const handleEditPromocion = (promocion) => {
+    setFormPromocion(promocion);
+    setEditPromocionId(promocion.id);
+    setIsEditMode(true);
+    setShowModal(true);
+  };
+
+  // Función para eliminar una promoción
+  const handleDeletePromocion = async (id) => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡Esta acción no se puede deshacer!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(`http://localhost:5244/api/Promociones/${id}`, {
+            method: 'DELETE',
+          });
+
+          if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
+          }
+
+          Swal.fire('Eliminado', 'La promoción ha sido eliminada.', 'success');
+          fetchPromociones(); // Recargar las promociones
+        } catch (error) {
+          console.error('Error al eliminar la promoción:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo eliminar la promoción. Intenta nuevamente más tarde.',
+          });
+        }
+      }
+    });
+  };
 
   return (
     <>
       <Container className="plantas-container">
         <div className="d-flex justify-content-end align-items-center mb-3">
-          <Button variant="success" onClick={() => setShowModal(true)}>
+          <Button
+            variant="success"
+            onClick={() => {
+              setShowModal(true);
+              setIsEditMode(false);
+              setFormPromocion({
+                descripcion: "",
+                valorPuntos: "",
+                minimoParaCanje: "",
+                idSucursal: "",
+                estatus: true,
+              });
+            }}
+          >
             Crear Promoción
           </Button>
         </div>
@@ -114,13 +206,29 @@ export const Promociones = () => {
                     <td>{promocion.descripcion}</td>
                     <td>{promocion.valorPuntos}</td>
                     <td>{promocion.minimoParaCanje}</td>
-                    <td>{promocion.idSucursal}</td>
+                    <td>{getSucursalNombre(promocion.idSucursal)}</td>
                     <td>{promocion.estatus ? "Activa" : "Inactiva"}</td>
+                    <td>
+                      <Button
+                        variant="warning"
+                        size="sm"
+                        onClick={() => handleEditPromocion(promocion)}
+                      >
+                        Editar
+                      </Button>{' '}
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => handleDeletePromocion(promocion.id)}
+                      >
+                        Eliminar
+                      </Button>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="text-center">
+                  <td colSpan="6" className="text-center">
                     No hay promociones disponibles.
                   </td>
                 </tr>
@@ -130,10 +238,10 @@ export const Promociones = () => {
         </div>
       </Container>
 
-      {/* Modal para crear una nueva promoción */}
+      {/* Modal para crear o editar una promoción */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Crear Nueva Promoción</Modal.Title>
+          <Modal.Title>{isEditMode ? 'Editar Promoción' : 'Crear Nueva Promoción'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -142,7 +250,7 @@ export const Promociones = () => {
               <Form.Control
                 type="text"
                 name="descripcion"
-                value={newPromocion.descripcion}
+                value={formPromocion.descripcion}
                 onChange={handleInputChange}
               />
             </Form.Group>
@@ -151,7 +259,7 @@ export const Promociones = () => {
               <Form.Control
                 type="number"
                 name="valorPuntos"
-                value={newPromocion.valorPuntos}
+                value={formPromocion.valorPuntos}
                 onChange={handleInputChange}
               />
             </Form.Group>
@@ -160,30 +268,36 @@ export const Promociones = () => {
               <Form.Control
                 type="number"
                 name="minimoParaCanje"
-                value={newPromocion.minimoParaCanje}
+                value={formPromocion.minimoParaCanje}
                 onChange={handleInputChange}
               />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Planta</Form.Label>
-              <Form.Control
-                type="text"
+              <Form.Select
                 name="idSucursal"
-                value={newPromocion.idSucursal}
+                value={formPromocion.idSucursal}
                 onChange={handleInputChange}
-              />
+              >
+                <option value="">Seleccione una planta</option>
+                {sucursales.map((sucursal) => (
+                  <option key={sucursal.id} value={sucursal.id}>
+                    {sucursal.nombre}
+                  </option>
+                ))}
+              </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
-            <Form.Label>Estatus</Form.Label>
-            <Form.Check
+              <Form.Label>Estatus</Form.Label>
+              <Form.Check
                 type="checkbox"
                 label="Activo"
                 name="estatus"
-                checked={newPromocion.estatus}
+                checked={formPromocion.estatus}
                 onChange={(e) =>
-                setNewPromocion({ ...newPromocion, estatus: e.target.checked })
+                  setFormPromocion({ ...formPromocion, estatus: e.target.checked })
                 }
-            />
+              />
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -192,7 +306,7 @@ export const Promociones = () => {
             Cancelar
           </Button>
           <Button variant="primary" onClick={handleSavePromocion}>
-            Guardar
+            {isEditMode ? 'Actualizar' : 'Guardar'}
           </Button>
         </Modal.Footer>
       </Modal>
