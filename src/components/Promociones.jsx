@@ -9,23 +9,27 @@ export const Promociones = () => {
   const [showModal, setShowModal] = useState(false); // Estado para controlar el modal
   const [isEditMode, setIsEditMode] = useState(false); // Estado para diferenciar entre crear y editar
   const [editPromocionId, setEditPromocionId] = useState(null); // ID de la promoción a editar
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1); 
+  const itemsPerPage = 5; 
   const [formPromocion, setFormPromocion] = useState({
     descripcion: "",
     valorPuntos: "",
     minimoParaCanje: "",
     idSucursal: "",
     estatus: true,
-  }); // Estado para guardar los datos del formulario
+  }); 
 
   // Función para obtener las promociones del endpoint
   const fetchPromociones = async () => {
     try {
-      const response = await fetch('http://localhost:5244/api/Promociones?PageNumber=1&PageSize=10');
+      const response = await fetch(`http://localhost:5244/api/Promociones?PageNumber=${currentPage}&PageSize=${itemsPerPage}`);
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
       const data = await response.json();
-      setPromociones(data); // Guardar los datos en el estado
+      setPromociones(data); // Guardar los registros de las promociones
+      setTotalPages(Math.ceil(data.totalRegistros / itemsPerPage)); // totalRegistros para calcular el total de páginas
     } catch (error) {
       console.error('Error al obtener las promociones:', error);
       Swal.fire({
@@ -35,6 +39,7 @@ export const Promociones = () => {
       });
     }
   };
+
 
   // Función para obtener las sucursales del endpoint
   const fetchSucursales = async () => {
@@ -65,7 +70,7 @@ export const Promociones = () => {
   useEffect(() => {
     fetchPromociones();
     fetchSucursales();
-  }, []);
+  }, [currentPage]);
 
   // Función para manejar el cambio de los inputs en el formulario
   const handleInputChange = (e) => {
@@ -73,14 +78,50 @@ export const Promociones = () => {
     setFormPromocion({ ...formPromocion, [name]: value });
   };
 
+  const checkPromocionActiva = async (idSucursal) => {
+    try {
+
+      const response = await fetch('http://localhost:5244/api/Promociones');
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      const data = await response.json();
+      
+      // Filtrar las promociones activas por la sucursal seleccionada
+      const existePromocionActiva = data.registros.some(
+        (promocion) => 
+          promocion.estatus === true && 
+          promocion.idSucursal === parseInt(idSucursal, 10) && 
+          promocion.id !== parseInt(editPromocionId, 10)  
+      );     
+
+      return existePromocionActiva;
+    } catch (error) {
+      console.error('Error al verificar la promoción activa:', error);
+      return false;
+    }
+  };
+  
   // Función para guardar o editar una promoción
   const handleSavePromocion = async () => {
+    // Validar si ya existe una promoción activa para la misma planta
+    const existePromocionActiva = await checkPromocionActiva(formPromocion.idSucursal);
+  
+    if (existePromocionActiva) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Ya existe una promoción activa para la planta seleccionada.',
+      });
+      return; 
+    }
+  
     try {
       const method = isEditMode ? 'PUT' : 'POST';
       const url = isEditMode
         ? `http://localhost:5244/api/Promociones/${editPromocionId}`
         : 'http://localhost:5244/api/Promociones';
-
+  
       const response = await fetch(url, {
         method,
         headers: {
@@ -88,11 +129,11 @@ export const Promociones = () => {
         },
         body: JSON.stringify(formPromocion),
       });
-
+  
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
-
+  
       Swal.fire({
         icon: 'success',
         title: 'Éxito',
@@ -100,17 +141,17 @@ export const Promociones = () => {
           ? 'La promoción se actualizó correctamente.'
           : 'La promoción se creó correctamente.',
       });
-
-      setShowModal(false); // Cerrar el modal
+  
+      setShowModal(false); 
       setFormPromocion({
         descripcion: "",
         valorPuntos: "",
         minimoParaCanje: "",
         idSucursal: "",
         estatus: true,
-      }); // Limpiar el formulario
+      }); 
       setIsEditMode(false);
-      fetchPromociones(); // Recargar las promociones
+      fetchPromociones(); 
     } catch (error) {
       console.error('Error al guardar la promoción:', error);
       Swal.fire({
@@ -120,6 +161,8 @@ export const Promociones = () => {
       });
     }
   };
+  
+  
 
   // Función para mostrar el modal en modo edición
   const handleEditPromocion = (promocion) => {
@@ -152,7 +195,7 @@ export const Promociones = () => {
           }
 
           Swal.fire('Eliminado', 'La promoción ha sido eliminada.', 'success');
-          fetchPromociones(); // Recargar las promociones
+          fetchPromociones(); 
         } catch (error) {
           console.error('Error al eliminar la promoción:', error);
           Swal.fire({
@@ -163,6 +206,19 @@ export const Promociones = () => {
         }
       }
     });
+  };
+
+  // Funciones para cambiar de página
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
   };
 
   return (
@@ -201,6 +257,7 @@ export const Promociones = () => {
             </thead>
             <tbody>
               {Array.isArray(promociones.registros) && promociones.registros.length > 0 ? (
+                
                 promociones.registros.map((promocion) => (
                   <tr key={promocion.id}>
                     <td>{promocion.descripcion}</td>
@@ -235,6 +292,23 @@ export const Promociones = () => {
               )}
             </tbody>
           </Table>
+          <div className="d-flex justify-content-center">
+          <Button
+            variant="success"
+            disabled={currentPage === 1}
+            onClick={handlePreviousPage}
+          >
+            Anterior
+          </Button>
+          <span>Página {currentPage} de {totalPages}</span>
+          <Button
+            variant="success"
+            disabled={currentPage === totalPages}
+            onClick={handleNextPage}
+          >
+            Siguiente
+          </Button>
+        </div>      
         </div>
       </Container>
 
