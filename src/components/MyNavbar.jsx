@@ -20,7 +20,7 @@ const MyNavbar = () => {
             id="collapsible-nav-dropdown"
             className="text-center custom-success-dropdown"
           >
-            <NavDropdown.Item href="#action/3.1">Plantas</NavDropdown.Item>
+            <NavDropdown.Item href="/plantas">Plantas</NavDropdown.Item>
             <NavDropdown.Item href="#action/3.2">Promociones</NavDropdown.Item>
             <NavDropdown.Divider />
           </NavDropdown>
