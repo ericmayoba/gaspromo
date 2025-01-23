@@ -18,20 +18,29 @@ export const Canjes = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    const { codigo, canjear } = data;
+    const { codigo, canjear, disponibles } = data;
+    
+    if(canjear > disponibles) {
+      Swal.fire("Error", "La cantidad a canjear no puede ser mayor que la cantidad disponible.", "error");
+      return; 
+    }
+
     try {
       const response = await fetch(`http://localhost:5244/api/Canjes/PostCanje?codigo=${codigo}&canje=${canjear}`, {
         method: 'POST',
       });
 
-      if (response.ok) {
-        Swal.fire("Éxito", 'Canje realizado con éxito', "success");
-        reset();
-      } else {
-        Swal.fire("Error", "Error al obtener los datos del canje'.", "error"); 
+      if (!response.ok) {
+        // Si la respuesta no es "ok", lanzar un error para capturarlo
+        const errorData = await response.json();
+        throw new Error(errorData.error);
       }
+  
+      // Si la solicitud fue exitosa
+      Swal.fire('Éxito', 'Canje realizado con éxito', 'success');
     } catch (error) {
-      Swal.fire("Error", "Error al realizar el canje: ", error); 
+      // Capturar el error y mostrar el mensaje en la vista
+      Swal.fire('Error', error.message, 'error');
     }
   };
 
