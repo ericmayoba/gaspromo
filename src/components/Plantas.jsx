@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Form, Button, Container, Modal, Table } from 'react-bootstrap';
 import "../Styles/Plantas.css";
+import Swal from "sweetalert2";
 
 export const Plantas = () => {
   const [sucursales, setSucursales] = useState([]); // Estado para almacenar los datos
@@ -40,7 +41,6 @@ export const Plantas = () => {
 
   // Guardar los cambios y enviar la solicitud PUT al backend
   const handleSave = async () => {
-    console.log(selectedPlanta);
     try {
       const response = await fetch(`http://localhost:5244/Sucursales/${selectedPlanta.id}`, {
         method: 'PUT',
@@ -55,11 +55,10 @@ export const Plantas = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`Error al guardar: ${response.status}`);
+        Swal.fire('Error', `Error al guardar: ${response.status}`, 'error');
       }
-
-      //const updatedPlanta = await response.json();
-
+      
+      Swal.fire('Éxito', 'Planta Modificada con éxito', 'success');
       // Actualizar la planta en la lista sin necesidad de recargar
       setSucursales((prev) =>
         prev.map((sucursal) =>
