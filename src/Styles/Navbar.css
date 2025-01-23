@@ -1,31 +1,28 @@
-.navbar {
-    background-color: #333;
-    padding: 10px 20px;
-    position: fixed; /* Fija el navbar en la parte superior */
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-  }
-  .navbar ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-  }
-  .navbar li {
-    margin-right: 20px;
-  }
-  .navbar a,
-  .navbar button {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-    padding: 8px 12px;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  .navbar a:hover,
-  .navbar button:hover {
-    background-color: #555;
-  }
+/* Cambiar el color del botón del título */
+.custom-success-dropdown .dropdown-toggle {
+  background-color: #198754; /* Color de fondo Success */
+  color: #fff; /* Texto blanco */
+  border-radius: 5px; /* Opcional: Bordes redondeados */
+}
+
+/* Cambiar el color del menú desplegable */
+.custom-success-dropdown .dropdown-menu {
+  background-color: #198754; /* Fondo Success */
+  border: none; /* Sin borde */
+}
+
+/* Cambiar el color de las opciones */
+.custom-success-dropdown .dropdown-item {
+  color: #fff; /* Texto blanco */
+}
+
+/* Cambiar el color de las opciones al pasar el mouse */
+.custom-success-dropdown .dropdown-item:hover {
+  background-color: #155724; /* Más oscuro que Success */
+  color: #fff; /* Texto blanco */
+}
+
+/* Cambiar el divisor */
+.custom-success-dropdown .dropdown-divider {
+  border-color: rgba(255, 255, 255, 0.2); /* Divisor blanco con opacidad */
+}
