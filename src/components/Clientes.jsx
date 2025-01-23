@@ -32,7 +32,7 @@ const Clientes = () => {
       fetch(`http://localhost:5244/api/Clientes?PageNumber=${currentPage}&PageSize=${pageSize}`)
         .then((res) => res.json())
         .then((data) => {
-          setClientes(data.clientes); 
+          setClientes(data.registros); 
           setTotalPages(data.totalRegistros); 
         })
         .catch((error) => console.error(error))
@@ -239,7 +239,8 @@ const Clientes = () => {
             </tr>
           </thead>
           <tbody>
-            {clientes.length > 0 ? (
+          {Array.isArray(clientes) && 
+            clientes.length > 0 ? (
               clientes.map((cliente) => (
                 <tr key={cliente.id}>
                   <td>{cliente.codigo}</td>
