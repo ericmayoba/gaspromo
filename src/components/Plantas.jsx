@@ -72,6 +72,28 @@ export const Plantas = () => {
     }
   };
 
+    // Manejar la eliminación de una planta
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5244/Sucursales/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        Swal.fire('Error', `Error al eliminar: ${response.status}`, 'error');
+        return;
+      }
+
+      Swal.fire('Éxito', 'Planta eliminada con éxito', 'success');
+      // Actualizar la lista de sucursales eliminando la planta
+      setSucursales((prev) => prev.filter((sucursal) => sucursal.id !== id));
+    } catch (error) {
+      console.error('Error al eliminar la planta:', error);
+      Swal.fire('Error', 'Hubo un problema al eliminar la planta.', 'error');
+    }
+  };
+
+
   return (
     <Container className="plantas-container">
       <div className="plantas-content">
@@ -102,10 +124,26 @@ export const Plantas = () => {
                     <Button
                       variant="danger"
                       size="sm"
-                      onClick={() => alert(`Eliminar: ${sucursal.nombre}`)}
-                    >
-                      Eliminar
-                    </Button>
+                      onClick={() => {
+                        Swal.fire({
+                          title: '¿Estás seguro?',
+                          text: 'No podrás deshacer esta acción.',
+                          icon: 'warning',
+                          showCancelButton: true,
+                          confirmButtonColor: '#d33',
+                          cancelButtonColor: '#3085d6',
+                          confirmButtonText: 'Sí, eliminar',
+                          cancelButtonText: 'Cancelar',
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            handleDelete(sucursal.id);
+                          }
+                        });
+                      }}
+                      >
+                        Eliminar
+                      </Button>
+
                   </td>
                 </tr>
               ))
