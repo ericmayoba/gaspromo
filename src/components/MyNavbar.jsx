@@ -21,7 +21,7 @@ const MyNavbar = () => {
             className="text-center custom-success-dropdown"
           >
             <NavDropdown.Item href="/plantas">Plantas</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.2">Promociones</NavDropdown.Item>
+            <NavDropdown.Item href="/promociones">Promociones</NavDropdown.Item>
             <NavDropdown.Divider />
           </NavDropdown>
         </Nav>

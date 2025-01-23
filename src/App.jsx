@@ -5,6 +5,7 @@ import Clientes from './components/Clientes'
 import { Visitas } from './components/Visitas';
 import { Canjes } from './components/Canjes';
 import { Plantas } from './components/Plantas';
+import { Promociones } from './components/Promociones';
 
 
 const App = () => {
@@ -16,7 +17,9 @@ const App = () => {
         <Route path="/Clientes" element={<Clientes />} />
         <Route path="/Visitas" element={<Visitas />} />
         <Route path="/Canjes" element={<Canjes />} />   
-        <Route path="/Plantas" element={<Plantas />} />       
+        <Route path="/Plantas" element={<Plantas />} />   
+        <Route path="/Promociones" element={<Promociones />} />   
+
       </Routes>
     </Router>
   );
