@@ -243,7 +243,10 @@ export const Promociones = () => {
           </Button>
         </div>
         <div className="promociones-content">
-          <h1>Mantenimiento de Promociones</h1>
+          <div className='text-success'>
+          <h3>Mantenimiento de Promociones</h3>
+          </div>
+          
           <Table striped bordered hover>
             <thead>
               <tr>

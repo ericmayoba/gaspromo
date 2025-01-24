@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal, Form, Container } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -16,6 +16,7 @@ const Clientes = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [modalMode, setModalMode] = useState("create");
   const [isLoading, setIsLoading] = useState(true);
+  const itemsPerPage = 10; 
 
   // Cargar lista de plantas
   useEffect(() => {
@@ -33,7 +34,7 @@ const Clientes = () => {
         .then((res) => res.json())
         .then((data) => {
           setClientes(data.registros); 
-          setTotalPages(data.totalRegistros); 
+          setTotalPages(Math.ceil(data.totalRegistros / itemsPerPage)); // totalRegistros para calcular el total de páginas
         })
         .catch((error) => console.error(error))
         .finally(() => setIsLoading(false)); 
@@ -211,19 +212,21 @@ const Clientes = () => {
   };
 
   return (
-    <div className="container">
-    <div className="d-flex justify-content-end align-items-center mb-3">
+    <Container className="clientes-container">    
+        <div className="d-flex justify-content-end align-items-center mb-3">
       <Button variant="success" onClick={() => handleShowModal(null, "create")}>
         Crear Cliente
       </Button>
     </div>
+    <div className="clientes-content">
+
     {isLoading ? (
     <div className="text-center">
     <img src="/src/assets/loading.gif" alt="Cargando..." />
     </div>
     ) : (
-    <div className="card border-success">
-      <div className="card-header bg-success bg-opacity-10 text-success">
+    <div>
+      <div className="text-success">
         <h3>Mantenimiento de Clientes</h3>
       </div>
       <div className="card-body">
@@ -285,11 +288,11 @@ const Clientes = () => {
           </tbody>
         </table>
         <div className="pagination d-flex justify-content-center align-items-center mb-3">
-          <Button variant="secondary" onClick={goToPreviousPage} disabled={currentPage === 1}>
+          <Button variant="success" onClick={goToPreviousPage} disabled={currentPage === 1}>
             Anterior
           </Button>
           <span>  Página {currentPage} de {totalPages}</span>
-          <Button variant="secondary" onClick={goToNextPage} disabled={currentPage === totalPages}>
+          <Button variant="success" onClick={goToNextPage} disabled={currentPage === totalPages}>
             Siguiente
           </Button>
         </div>
@@ -448,7 +451,8 @@ const Clientes = () => {
         </Form>
       </Modal.Body>
     </Modal>
-  </div>
+    </div>
+  </Container>
   );
 };
 

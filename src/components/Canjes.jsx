@@ -79,8 +79,8 @@ export const Canjes = () => {
     <Container className='canjes-container'>
         
     <div className='canjes-content'>
-        <div className='title'>
-            <h1 className="mt-4">Formulario de Canje</h1>
+        <div className='title text-success'>
+            <h3>Formulario de Canje</h3>
         </div>
      
       <Form onSubmit={handleSubmit(onSubmit)}>

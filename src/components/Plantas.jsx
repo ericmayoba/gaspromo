@@ -161,7 +161,10 @@ export const Plantas = () => {
       </Button>
     </div>
       <div className="plantas-content">
-        <h1>Mantenimiento de Plantas</h1>
+        <div className='text-success'>
+        <h3>Mantenimiento de Plantas</h3>
+        </div>
+        
         <Table striped bordered hover>
           <thead>
             <tr>

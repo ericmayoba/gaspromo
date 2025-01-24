@@ -125,7 +125,7 @@ export const Visitas = () => {
         <div className="container">
             <div className="content">
                 {/* Columna izquierda */}
-                <div className="capture-section">
+                <div className="text-success">
                     <h3>Captura</h3>
                     <video ref={videoRef} className="video" />
                 </div>
@@ -135,7 +135,10 @@ export const Visitas = () => {
 
                 {/* Columna derecha */}
                 <div className="data-section">
+                    <div className="text-success">
                     <h3>Información del Cliente</h3>
+                    </div>
+                    
                     <div className='form-control'>
                         <label><strong>Código:</strong> {data.codigo}</label>
                     </div>
