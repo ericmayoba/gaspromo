@@ -25,7 +25,7 @@ export const Plantas = () => {
         }
         const data = await response.json();
         setSucursales(data.registros); // Datos de la página actual
-        setTotalPages(data.totalRegistros); // Total de páginas desde el backend
+        setTotalPages(Math.ceil(data.totalRegistros / itemsPerPage)); // Total de páginas desde el backend
       } catch (error) {
         console.error('Error al obtener las sucursales:', error);
       }
