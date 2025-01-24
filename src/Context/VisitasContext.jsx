@@ -3,6 +3,7 @@ import { createContext, useContext, useState } from 'react';
 
 // Crear el contexto
 const VisitasContext = createContext();
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // Proveedor del contexto
 export const VisitasProvider = ({ children }) => {
@@ -15,7 +16,7 @@ export const VisitasProvider = ({ children }) => {
 
 const validarVisitaReciente = async (codigoCliente) => {
   try {
-    const response = await fetch(`http://localhost:5244/api/Visitas/${codigoCliente}`);
+    const response = await fetch(`${API_BASE_URL}/Visitas/${codigoCliente}`);
     
     if (!response.ok) {
       console.error(`Error al obtener la última visita: ${response.statusText}`);

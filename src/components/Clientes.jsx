@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import '../Styles/Clientes.css'; 
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Variable de entorno
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Clientes = () => {
   const [clientes, setClientes] = useState([]);
