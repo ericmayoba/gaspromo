@@ -428,7 +428,7 @@ const Clientes = () => {
                   isInvalid={!!errors.planta}
                 >
                   <option value="">Seleccione una planta</option>
-                  {plantas.map((planta) => (
+                  {plantas.registros.map((planta) => (
                     <option key={planta.id} value={planta.id}>
                       {planta.nombre}
                     </option>
