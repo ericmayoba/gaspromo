@@ -32,7 +32,7 @@ const Clientes = () => {
   useEffect(() => {
     setIsLoading(true); 
     const timer = setTimeout(() => { 
-      fetch(`${API_BASE_URL}/api/Clientes?PageNumber=${currentPage}&PageSize=${pageSize}`)
+      fetch(`${API_BASE_URL}/Clientes?PageNumber=${currentPage}&PageSize=${pageSize}`)
         .then((res) => res.json())
         .then((data) => {
           setClientes(data.registros); 
@@ -147,8 +147,8 @@ const Clientes = () => {
       id: cliente.id,  
     };
     const endpoint = cliente.id
-    ? `${API_BASE_URL}/api/Clientes/${cliente.codigo}`
-    : `${API_BASE_URL}/api/Clientes`;
+    ? `${API_BASE_URL}/Clientes/${cliente.codigo}`
+    : `${API_BASE_URL}/Clientes`;
     const method = cliente.id ? "PUT" : "POST";
     const successMessage = cliente.id
       ? "Cliente actualizado exitosamente"
@@ -196,7 +196,7 @@ const Clientes = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`${API_BASE_URL}/api/Clientes/${codigo}`, {
+        fetch(`${API_BASE_URL}/Clientes/${codigo}`, {
           method: "DELETE",
         })
           .then((response) => {

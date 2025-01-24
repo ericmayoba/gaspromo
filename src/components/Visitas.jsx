@@ -63,7 +63,7 @@ export const Visitas = () => {
 
     const fetchData = async (codigo) => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/Canjes/GetDataCanje?codigo=${codigo}`);
+            const response = await fetch(`${API_BASE_URL}/Canjes/GetDataCanje?codigo=${codigo}`);
             if (response.ok) {
                 const result = await response.json();
                 const data = result[0] || {};
@@ -113,7 +113,7 @@ export const Visitas = () => {
         };
       
         try {
-            const response = await fetch(`${API_BASE_URL}/api/Visitas`, {
+            const response = await fetch(`${API_BASE_URL}/Visitas`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

@@ -28,7 +28,7 @@ export const Canjes = () => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Canjes/PostCanje?codigo=${codigo}&canje=${canjear}`, {
+      const response = await fetch(`${API_BASE_URL}/Canjes/PostCanje?codigo=${codigo}&canje=${canjear}`, {
         method: 'POST',
       });
 
@@ -52,7 +52,7 @@ export const Canjes = () => {
 
     if (inputCodigo) {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/Canjes/GetDataCanje?codigo=${inputCodigo}`);
+        const response = await fetch(`${API_BASE_URL}/Canjes/GetDataCanje?codigo=${inputCodigo}`);
         if (response.ok) {
           const data = await response.json();
           if (data.length > 0) {
