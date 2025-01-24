@@ -6,6 +6,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import '../Styles/Clientes.css'; 
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Variable de entorno
+
 const Clientes = () => {
   const [clientes, setClientes] = useState([]);
   const [plantas, setPlantas] = useState([]); 
@@ -20,7 +22,7 @@ const Clientes = () => {
 
   // Cargar lista de plantas
   useEffect(() => {
-    fetch("http://localhost:5244/Sucursales")
+    fetch(`${API_BASE_URL}/Sucursales`)
       .then((res) => res.json())
       .then((data) => setPlantas(data))
       .catch((error) => console.error(error));
@@ -30,7 +32,7 @@ const Clientes = () => {
   useEffect(() => {
     setIsLoading(true); 
     const timer = setTimeout(() => { 
-      fetch(`http://localhost:5244/api/Clientes?PageNumber=${currentPage}&PageSize=${pageSize}`)
+      fetch(`${API_BASE_URL}/api/Clientes?PageNumber=${currentPage}&PageSize=${pageSize}`)
         .then((res) => res.json())
         .then((data) => {
           setClientes(data.registros); 
@@ -145,8 +147,8 @@ const Clientes = () => {
       id: cliente.id,  
     };
     const endpoint = cliente.id
-      ? `http://localhost:5244/api/Clientes/${cliente.codigo}`
-      : "http://localhost:5244/api/Clientes";
+    ? `${API_BASE_URL}/api/Clientes/${cliente.codigo}`
+    : `${API_BASE_URL}/api/Clientes`;
     const method = cliente.id ? "PUT" : "POST";
     const successMessage = cliente.id
       ? "Cliente actualizado exitosamente"
@@ -194,7 +196,7 @@ const Clientes = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5244/api/Clientes/${codigo}`, {
+        fetch(`${API_BASE_URL}/api/Clientes/${codigo}`, {
           method: "DELETE",
         })
           .then((response) => {

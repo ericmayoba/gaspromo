@@ -20,10 +20,12 @@ export const Promociones = () => {
     estatus: true,
   }); 
 
+  const BASE_URL = import.meta.env.REACT_APP_API_URL;
+
   // Función para obtener las promociones del endpoint
   const fetchPromociones = async () => {
     try {
-      const response = await fetch(`http://localhost:5244/api/Promociones?PageNumber=${currentPage}&PageSize=${itemsPerPage}`);
+      const response = await fetch(`${BASE_URL}/api/Promociones?PageNumber=${currentPage}&PageSize=${itemsPerPage}`);
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
@@ -44,7 +46,7 @@ export const Promociones = () => {
   // Función para obtener las sucursales del endpoint
   const fetchSucursales = async () => {
     try {
-      const response = await fetch('http://localhost:5244/Sucursales?PageNumber=1&PageSize=10');
+      const response = await fetch(`${BASE_URL}/Sucursales?PageNumber=1&PageSize=10`);
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
@@ -81,7 +83,7 @@ export const Promociones = () => {
   const checkPromocionActiva = async (idSucursal) => {
     try {
 
-      const response = await fetch('http://localhost:5244/api/Promociones');
+      const response = await fetch(`${BASE_URL}/api/Promociones`);
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
@@ -119,8 +121,8 @@ export const Promociones = () => {
     try {
       const method = isEditMode ? 'PUT' : 'POST';
       const url = isEditMode
-        ? `http://localhost:5244/api/Promociones/${editPromocionId}`
-        : 'http://localhost:5244/api/Promociones';
+      ? `${BASE_URL}/api/Promociones/${editPromocionId}`
+      : `${BASE_URL}/api/Promociones`;
   
       const response = await fetch(url, {
         method,
@@ -185,8 +187,8 @@ export const Promociones = () => {
       cancelButtonText: 'Cancelar',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        try {
-          const response = await fetch(`http://localhost:5244/api/Promociones/${id}`, {
+        try {          
+          const response = await fetch(`${BASE_URL}/Promociones/${id}`, {
             method: 'DELETE',
           });
 

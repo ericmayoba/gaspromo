@@ -3,7 +3,9 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import Swal from "sweetalert2";
-import "../Styles/Canjes.css"
+import "../Styles/Canjes.css";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
 export const Canjes = () => {
@@ -26,7 +28,7 @@ export const Canjes = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5244/api/Canjes/PostCanje?codigo=${codigo}&canje=${canjear}`, {
+      const response = await fetch(`${API_BASE_URL}/api/Canjes/PostCanje?codigo=${codigo}&canje=${canjear}`, {
         method: 'POST',
       });
 
@@ -50,7 +52,7 @@ export const Canjes = () => {
 
     if (inputCodigo) {
       try {
-        const response = await fetch(`http://localhost:5244/api/Canjes/GetDataCanje?codigo=${inputCodigo}`);
+        const response = await fetch(`${API_BASE_URL}/api/Canjes/GetDataCanje?codigo=${inputCodigo}`);
         if (response.ok) {
           const data = await response.json();
           if (data.length > 0) {

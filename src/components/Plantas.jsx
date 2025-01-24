@@ -13,12 +13,13 @@ export const Plantas = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1); 
   const itemsPerPage = 5; 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   // Obtener datos desde el endpoint
   useEffect(() => {
     const fetchSucursales = async () => {
       try {
-        const response = await fetch(`http://localhost:5244/Sucursales?PageNumber=${currentPage}&PageSize=${itemsPerPage}`);
+        const response = await fetch(`${API_BASE_URL}/Sucursales?PageNumber=${currentPage}&PageSize=${itemsPerPage}`);
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
         }
@@ -49,7 +50,7 @@ export const Plantas = () => {
   // Guardar los cambios y enviar la solicitud PUT al backend
   const handleSave = async () => {
     try {
-      const response = await fetch(`http://localhost:5244/Sucursales/${selectedPlanta.id}`, {
+      const response = await fetch(`${API_BASE_URL}/Sucursales/${selectedPlanta.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +83,7 @@ export const Plantas = () => {
     // Manejar la eliminación de una planta
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5244/Sucursales/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/Sucursales/${id}`, {
         method: 'DELETE',
       });
 
@@ -112,7 +113,7 @@ export const Plantas = () => {
 
   const handleCreateSave = async () => {
     try {
-      const response = await fetch('http://localhost:5244/Sucursales', {
+      const response = await fetch(`${API_BASE_URL}/Sucursales`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

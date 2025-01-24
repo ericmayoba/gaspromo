@@ -1,11 +1,13 @@
+/* eslint-disable no-undef */
 
 import { useRef, useEffect, useState } from 'react';
-import { Button, Form } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { BrowserMultiFormatReader } from '@zxing/library';
 import Swal from "sweetalert2";
 import "../Styles/Visitas.css";
 import { useVisitas}  from '../Context/VisitasContext';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const Visitas = () => {
     const { visitas, agregarVisita, validarVisitaReciente } = useVisitas();
@@ -19,6 +21,7 @@ export const Visitas = () => {
         visitas: ''
     });
     const [lastScannedCode, setLastScannedCode] = useState('');
+    
 
     useEffect(() => {
         const codeReader = new BrowserMultiFormatReader();
@@ -57,9 +60,10 @@ export const Visitas = () => {
         };
     }, [lastScannedCode]);
 
+
     const fetchData = async (codigo) => {
         try {
-            const response = await fetch(`http://localhost:5244/api/Canjes/GetDataCanje?codigo=${codigo}`);
+            const response = await fetch(`${API_BASE_URL}/api/Canjes/GetDataCanje?codigo=${codigo}`);
             if (response.ok) {
                 const result = await response.json();
                 const data = result[0] || {};
@@ -109,7 +113,7 @@ export const Visitas = () => {
         };
       
         try {
-          const response = await fetch("http://localhost:5244/api/Visitas", {
+            const response = await fetch(`${API_BASE_URL}/api/Visitas`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
