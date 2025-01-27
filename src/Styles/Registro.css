@@ -1,0 +1,41 @@
+.registro-container {
+
+    display: flex ;
+    justify-content: center;
+    align-items: center ;       
+    min-height: 100vh;
+    padding-top: 5%;
+}
+
+.registro-content {
+    display:flex;
+    flex-direction:row;
+    border: 2px solid #cdd3d7;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    height: 100%;
+    width: 35%;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25%;
+    
+}
+
+.registro-form {
+    width: 100%;
+    align-items: center ;
+    justify-content: center;
+    text-align: center;
+}
+
+.registro-container input::placeholder {
+    text-align: center;
+}
+
+.registro-container input {
+    text-align: center; 
+}
+
+p {
+    font-size:medium;
+}

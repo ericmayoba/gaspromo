@@ -4,11 +4,11 @@ import Swal from "sweetalert2";
 import "../Styles/Promociones.css";
 
 export const Promociones = () => {
-  const [promociones, setPromociones] = useState([]); // Estado para guardar las promociones
-  const [sucursales, setSucursales] = useState([]); // Estado para guardar las sucursales
-  const [showModal, setShowModal] = useState(false); // Estado para controlar el modal
-  const [isEditMode, setIsEditMode] = useState(false); // Estado para diferenciar entre crear y editar
-  const [editPromocionId, setEditPromocionId] = useState(null); // ID de la promoción a editar
+  const [promociones, setPromociones] = useState([]);
+  const [sucursales, setSucursales] = useState([]); 
+  const [showModal, setShowModal] = useState(false); 
+  const [isEditMode, setIsEditMode] = useState(false); 
+  const [editPromocionId, setEditPromocionId] = useState(null); 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1); 
   const itemsPerPage = 5; 
@@ -22,7 +22,6 @@ export const Promociones = () => {
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // Función para obtener las promociones del endpoint
   const fetchPromociones = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/Promociones?PageNumber=${currentPage}&PageSize=${itemsPerPage}`);
@@ -30,8 +29,8 @@ export const Promociones = () => {
         throw new Error(`Error: ${response.status}`);
       }
       const data = await response.json();
-      setPromociones(data); // Guardar los registros de las promociones
-      setTotalPages(Math.ceil(data.totalRegistros / itemsPerPage)); // totalRegistros para calcular el total de páginas
+      setPromociones(data);
+      setTotalPages(Math.ceil(data.totalRegistros / itemsPerPage)); 
     } catch (error) {
       console.error('Error al obtener las promociones:', error);
       Swal.fire({
@@ -42,8 +41,6 @@ export const Promociones = () => {
     }
   };
 
-
-  // Función para obtener las sucursales del endpoint
   const fetchSucursales = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/Sucursales?PageNumber=1&PageSize=10`);
@@ -51,7 +48,7 @@ export const Promociones = () => {
         throw new Error(`Error: ${response.status}`);
       }
       const data = await response.json();
-      setSucursales(data.registros); // Guardar los registros de sucursales
+      setSucursales(data.registros); 
     } catch (error) {
       console.error('Error al obtener las sucursales:', error);
       Swal.fire({
@@ -62,51 +59,50 @@ export const Promociones = () => {
     }
   };
 
-  // Función para obtener el nombre de la sucursal por su ID
   const getSucursalNombre = (idSucursal) => {
     const sucursal = sucursales.find((s) => s.id === idSucursal);
     return sucursal ? sucursal.nombre : "Desconocido";
   };
 
-  // Cargar las promociones y sucursales al cargar el componente
   useEffect(() => {
     fetchPromociones();
     fetchSucursales();
   }, [currentPage]);
 
-  // Función para manejar el cambio de los inputs en el formulario
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormPromocion({ ...formPromocion, [name]: value });
   };
 
-  const checkPromocionActiva = async (idSucursal) => {
+  const checkPromocionActiva = async (idSucursal, editPromocionId = null) => {
     try {
 
       const response = await fetch(`${API_BASE_URL}/Promociones`);
       if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+        throw new Error(`Error al obtener promociones: ${response.status} ${response.statusText}`);
       }
+  
       const data = await response.json();
-      
-      // Filtrar las promociones activas por la sucursal seleccionada
+  
+
       const existePromocionActiva = data.registros.some(
-        (promocion) => 
+        (promocion) =>
           promocion.estatus === true && 
           promocion.idSucursal === parseInt(idSucursal, 10) && 
-          promocion.id !== parseInt(editPromocionId, 10)  
-      );     
-
+          promocion.id !== parseInt(editPromocionId, 10) 
+      );
+  
       return existePromocionActiva;
     } catch (error) {
-      console.error('Error al verificar la promoción activa:', error);
+      console.error('Error al verificar la promoción activa:', error.message);
       return false;
     }
   };
   
-  // Función para guardar o editar una promoción
+  
+
   const handleSavePromocion = async () => {
-    // Validar si ya existe una promoción activa para la misma planta
     const existePromocionActiva = await checkPromocionActiva(formPromocion.idSucursal);
   
     if (existePromocionActiva) {
@@ -165,8 +161,6 @@ export const Promociones = () => {
   };
   
   
-
-  // Función para mostrar el modal en modo edición
   const handleEditPromocion = (promocion) => {
     setFormPromocion(promocion);
     setEditPromocionId(promocion.id);
@@ -174,7 +168,6 @@ export const Promociones = () => {
     setShowModal(true);
   };
 
-  // Función para eliminar una promoción
   const handleDeletePromocion = async (id) => {
     Swal.fire({
       title: '¿Estás seguro?',
@@ -210,7 +203,6 @@ export const Promociones = () => {
     });
   };
 
-  // Funciones para cambiar de página
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage((prev) => prev - 1);

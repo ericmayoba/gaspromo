@@ -1,28 +1,24 @@
-/* Cambiar el color del botón del título */
+
 .custom-success-dropdown .dropdown-toggle {
-  background-color: #198754; /* Color de fondo Success */
-  color: #fff; /* Texto blanco */
-  border-radius: 5px; /* Opcional: Bordes redondeados */
+  background-color: #198754; 
+  color: #fff;
+  border-radius: 5px; 
 }
 
-/* Cambiar el color del menú desplegable */
 .custom-success-dropdown .dropdown-menu {
-  background-color: #198754; /* Fondo Success */
-  border: none; /* Sin borde */
+  background-color: #198754; 
+  border: none; 
 }
 
-/* Cambiar el color de las opciones */
 .custom-success-dropdown .dropdown-item {
-  color: #fff; /* Texto blanco */
+  color: #fff; 
 }
 
-/* Cambiar el color de las opciones al pasar el mouse */
 .custom-success-dropdown .dropdown-item:hover {
-  background-color: #155724; /* Más oscuro que Success */
-  color: #fff; /* Texto blanco */
+  background-color: #155724; 
+  color: #fff; 
 }
 
-/* Cambiar el divisor */
 .custom-success-dropdown .dropdown-divider {
-  border-color: rgba(255, 255, 255, 0.2); /* Divisor blanco con opacidad */
+  border-color: rgba(255, 255, 255, 0.2); 
 }

@@ -39,11 +39,24 @@ export const Canjes = () => {
       }
   
       // Si la solicitud fue exitosa
+      resetForm();
       Swal.fire('Éxito', 'Canje realizado con éxito', 'success');
     } catch (error) {
       // Capturar el error y mostrar el mensaje en la vista
       Swal.fire('Error', error.message, 'error');
     }
+  };
+
+  // Resetear los campos del formulario
+  const resetForm = () => {
+    reset({
+      cliente: "",
+      visitas: "",
+      ganados: "",
+      canjeados: "",
+      disponibles: "",
+      fechaUltimoCanje: "",
+    });
   };
 
   const handleCodigoBlur = async (event) => {
