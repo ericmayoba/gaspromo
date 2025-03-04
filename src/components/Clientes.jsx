@@ -5,6 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import '../Styles/Clientes.css'; 
+import { useMutation, useQueryClient } from "react-query";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -19,6 +20,9 @@ const Clientes = () => {
   const [modalMode, setModalMode] = useState("create");
   const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 10; 
+  const [showCargaClientesModal, setShowCargaClientesModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const queryClient = useQueryClient();
 
   // Cargar lista de plantas
   useEffect(() => {
@@ -213,12 +217,55 @@ const Clientes = () => {
     });
   };
 
+  const uploadMutation = useMutation(
+    async (file) => {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch(`${API_BASE_URL}/Clientes/Cargar`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Error al subir el archivo");
+
+      return response.json();
+    },
+    {
+      onSuccess: () => {
+        Swal.fire("Éxito", "Clientes cargados correctamente", "success");
+        setShowCargaClientesModal(false);
+        setSelectedFile(null);
+        queryClient.invalidateQueries("clientes"); 
+      },
+      onError: (error) => {
+        Swal.fire("Error", error.message, "error");
+      },
+    }
+  );
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleFileUpload = () => {
+    if (!selectedFile) {
+      Swal.fire("Error", "Debe seleccionar un archivo", "error");
+      return;
+    }
+    uploadMutation.mutate(selectedFile);
+  };
+
+
   return (
     <Container className="clientes-container">    
         <div className="d-flex justify-content-end align-items-center mb-3">
       <Button variant="success" onClick={() => handleShowModal(null, "create")}>
         Crear Cliente
       </Button>
+      <Button variant="warning" onClick={() => setShowCargaClientesModal(true)} className="ms-3">
+          Cargar Masiva 
+        </Button>
     </div>
     <div className="clientes-content">
 
@@ -454,6 +501,47 @@ const Clientes = () => {
       </Modal.Body>
     </Modal>
     </div>
+
+    {/* Modal de carga de clientes */}
+    <Modal show={showCargaClientesModal} onHide={() => setShowCargaClientesModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Cargar Clientes desde Excel</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div
+            className="drop-zone"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              setSelectedFile(e.dataTransfer.files[0]);
+            }}
+            style={{
+              border: "2px dashed #007bff",
+              padding: "20px",
+              textAlign: "center",
+              cursor: "pointer",
+            }}
+          >
+            {selectedFile ? selectedFile.name : "Arrastra y suelta el archivo aquí o haz clic"}
+            <input
+              type="file"
+              accept=".xlsx, .xls"
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+              id="fileInput"
+            />
+            <label htmlFor="fileInput" className="btn btn-primary mt-2">Seleccionar Archivo</label>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowCargaClientesModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={handleFileUpload} disabled={uploadMutation.isLoading}>
+            {uploadMutation.isLoading ? "Subiendo..." : "Subir Archivo"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
   </Container>
   );
 };
