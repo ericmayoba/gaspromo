@@ -221,15 +221,18 @@ const Clientes = () => {
     async (file) => {
       const formData = new FormData();
       formData.append("file", file);
-
+  
       const response = await fetch(`${API_BASE_URL}/Clientes/Cargar`, {
         method: "POST",
         body: formData,
       });
-
-      if (!response.ok) throw new Error("Error al subir el archivo");
-
-      return response.json();
+  
+      if (!response.ok) {
+        const errorData = await response.json();  
+        throw new Error(JSON.stringify(errorData.errores));  
+      }
+  
+      return response.json();  
     },
     {
       onSuccess: () => {
@@ -239,10 +242,13 @@ const Clientes = () => {
         queryClient.invalidateQueries("clientes"); 
       },
       onError: (error) => {
-        Swal.fire("Error", error.message, "error");
+        const errorMessages = JSON.parse(error.message); 
+        const formattedErrors = errorMessages.map((err, index) => `${index + 1}. ${err}`).join("\n");  
+        Swal.fire("Error", `Errores de validación:\n${formattedErrors}`, "error");
       },
     }
   );
+  
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
